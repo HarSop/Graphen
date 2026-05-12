@@ -1,0 +1,506 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc} % Wichtig für Trennung von Wörtern
+\usepackage[utf8]{inputenc} % Erlaubt Umlaute im Code
+\usepackage{csquotes}
+\usepackage{bbm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+]{hyperref}
+\usepackage{cleveref}
+\usepackage{microtype}
+
+% Package zum verweisen auf Literatur
+\usepackage[style=numeric]{biblatex}
+\addbibresource{literatur.bib}
+
+% 1,5-fachen Zeilenabstand einstellen
+\usepackage{setspace}
+\oneandahalfspacing
+
+% Seitenumbrüche in Matheumgebungen erlauben
+\allowdisplaybreaks
+
+\newcommand{\N}{\mathbbm{N}} % natürliche Zahlen
+\newcommand{\Z}{\mathbbm{Z}} % ganze Zahlen
+\newcommand{\R}{\mathbb{R}} % reelle Zahlen
+\newcommand{\C}{\mathbb{C}} % komplexe Zahlen
+\newcommand{\Q}{\mathbb{Q}} % rationale Zahlen
+
+
+
+\newtheorem{satz}{Satz}
+\newtheorem{korollar}[satz]{Korollar}
+\newtheorem{bemerkung}[satz]{Bemerkung}
+\newtheorem{definition}[satz]{Definition}
+\newtheorem{lemma}[satz]{Lemma}
+\newtheorem{beispiel}[satz]{Beispiel}
+
+\title{Graphen \\ [0.5em] \Large Eine Ausarbeitung zum Vortrag \\ Proseminar Kombinatorik \\ Sommersemester 2026}
+\date{\today}
+\author{Sophie Hartmann \\ \url{shartmann37@uni-bielefeld.de}}
+
+
+
+\begin{document}
+\sloppy
+
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+
+\pagenumbering{arabic}
+
+\section{Einleitung}
+  Die Ausarbeitung behandelt das Thema Graphen und basiert auf (Hougrady& Vygen, 2018). 
+  Graphen sind breits aus der Schulmathematik bekannt als Darstellung von Funktionen im Koordinatensystem.
+  Sie stellen dann meist die Abhängigkeit der Variablen y von variable x dar.
+  So beispielsweise die Abängigkeit der zurückgelegten Strecke (in km) von der Zeit (in h) als Graph.\\
+  In dieser Ausarbeitung werden Graphen jedoch nicht als Ergebnisse einer Funktionsvorshcrift im Schulsinne, sondern allgemeiner als Kanten, die Knoten miteinander verbinden, aufgefasst.
+  Dies hat den Vorteil, dass klare Modelle für Informatik und Netzwerke entstehen und effiziente Algorithmen darauf aufbauen können.\\
+  Beispielsweise können Menschen durch Knoten dargestellt werden, die durch Freundschaften als Kanten miteinander verbunden sind.\\
+  Wir werden zunächst die Bedeutung von gerichteten und ungerichteten Graphen kennen lernen, was es bedeutet,\\
+  dass ein Graph zusammenhängend ist, was Wege oder Kantenzüge sind unf, was ein zugrundeliegender Graph G' über G aussagen kann. 
+    
+  \vspace{\baselineskip}
+\newpage
+
+\section{Grundlagen}
+  Dieser Abschnitt umfasst grundlegende Definitionen, Sätze und Beispiele, um in das Thema Graphen einsteigen zu können. 
+
+  \begin{definition} 
+    Graphen sind ein Tripel $(V,E,\psi)$ , wobei die Elemente aus V Knoten und die Elemente aus E Kanten heißen.\\
+    Ein Tripel $(V,E,\psi)$ , wobei V und E endliche Mengen sind,
+    $V \neq \emptyset$  und $\psi : E\rightarrow \{X \subseteq  V| |X|=2\}$
+    ist ein ungerichteter Graph.\\
+    Ein gerichteter Graph (auch Digraph) ist ein Tripel $(V, E, \psi)$, wobei V und E endliche Mengen sind, 
+    $V\neq \emptyset$, und $\psi: E\rightarrow \{(v,w)\in V\times V| v\neq w\}.$\\
+  \end {definition}
+  \vspace{\baselineskip}
+
+  \begin {definition} 
+    Zwei Kanten heißen parallel, falls $e\neq e'$ mit $\psi(e) \neq \psi (e')$.\\
+    Ein Graph ohne parallele Kanten heißt einfacher Graph.
+    Für einfache Graphen identifizieren wir e mit $\psi (e)$, das heißt, wir schreiben $G= (V(G), E(G)$ mit $E(G)) \subseteq {{v,w}| v,w \in V(G), v\neq w}$, bzw. $E(G)\subseteq {(v,w)| v,w\in V(G), v\neq w}$.
+    Man benutzt diese vereinfachte Notation oft auch für nicht einfache Graphen.\\
+    Beispielsweise ist $e= (x,y) \in E(G)$ eine eine Abkürzung für $e\in  E(G)$ mit $\psi (e)=(x,y)$. \\
+    Eine Kante $e=\{x,y\}$ bzw. $e= (x,y)$ verbindet die Knoten x und y.\\
+    Die Knoten x und y werden die Endknoten von e genannt. Außerdem ist x ist Nachbar von y, und y ist Nachbar von x.\\
+    Die Knoten x und y sind mit der Kante e inzident (verknüpft/ verbunden). \\
+    Falls $e=(x,y)$, so sagen wir: e beginnt in x und endet in y oder e geht von x nach y.\\
+  \end{definition}
+  \vspace{\baselineskip}
+
+  \begin{beispiel} 
+    Ein gerichteter Graph ist gegeben durch $(\{1,2,3,4,5\}, \{a,b,c,d,e\}, \{a\mapsto  (2,5), b\mapsto (4,5), c\mapsto (1,2), d\mapsto (2,1), e\mapsto (1,3)\})$. 
+    Dieser hat fünf Kanten und fünf Knoten.
+    Im gerichteten Fall zeigt ein Pfeil die Richtung von einer zur nächsten Kante an.
+    Im ungerichteten Fall sind die Kanten normale Striche, die die Knoten verbinden.
+  \end{beispiel}
+
+  \begin{definition}\\
+   (1) Sei G ein ungerichteter Graph und $X\subseteq V(G)$. 
+      Dann definiere $\delta (X):= \{{x,q}\in E(G)\in | x\in X, y\in  V(G) \X\}$, also werden mit $\delta(X)$ alle Kanten bezeichnet, die einen Endknoten innerhalb und einen außerhalb von X haben.\\
+     Die Nachbarschaft von X ist die Menge $N(X):= \{v\in V(G)\ X| \delta (X)\cap  \delta ({v}) \neq\emptyset\}$, also alle Kanten außerhalb von X, die mit mindestens einem Knoten innerhalb von X verbunden sind.\\
+    (2) Sei G ein Digraph und $X\in V(G)$.
+     Dann definiere $\delta^+$$(X) := \{(x,y)\in E(G)| x\in X, y\in V(G)\X\}$,
+     $\delta^-$ $(X):=$\delta^+$ (V(G)\setminus X)$  und $\delta (X):= $\delta^+$ \cup  $\delta^-$(X)$.\\
+      $\delta^+$ (X) sind also alle Kanten, die in X starten und außerhalb davon enden, während $\delta^-$ (X) alle Kanten in X sind, die außerhalb von X starten und in X enden.\\
+    (3) Für einen Graphen G und $x\in V(G)$ setzte \\
+    $\delta (x):= \delta (\{x\}),  N(x):= N(\{x\})$,  $\delta^+$ (x) := $\delta^+$(\{x\}) und $\delta^-$(x):=$\delta^-$(\{x\}).
+    (4) Der Grad eines Knotens x ist $|\delta (x)|$,\\
+     das heißt: die Anzahl der mit x inzidenten Kanten.
+      Im gerichteten Fall bezeichnen $ $|\delta^-$(x)|$ bzw. $ |$\delta+^$(x)| $ den Eingangs- bzw. Ausgangasgrad von x und es gilt: \\
+    $|\delta (x)|$= |$\delta^+$(x)| + |$\delta^-$(x)|.\\
+    Notation: Falls mehrere Graphen auf der gleichen Knotenmenge betrachtet werden, ist es häufig erforderlich anzugeben, auf welchen Graphen man sich bezieht.\\
+    Dies macht man durch ein Subskipt bspw: $\delta_G$ (x).
+    \end{definition}
+  \vspace{\baselineskip}
+
+  \begin{satz}
+    Für jede Graphen G gilt: $\Sigma_{x\in V(G)}$ $|\delta (x)|$= $2|E(G)|$.
+    \begin{proof}
+      Jede Kante ist genau mit zwei Knoten verbunden.\\
+      Jede Kante wird bei Berechnung des Grades einmal gezählt. \\
+      Bei Berechnung des benachbarten Knotens aber erneut.\\
+      So wird jede Kante innerhalb von G zweimal gezählt bei Summation der Grade aller Knoten in G.\\
+    \end{proof}
+  \end{satz}
+  \vspace{\baselineskip}
+
+  \begin{satz}
+    Für jeden Digraphen G gilt: $\Sigma_{x\in V(G)}$ |$\delta^+$ (x)|= $\Sigma_{x\in V(G)}$|$\delta^-$ (x)|
+    \begin{proof}
+     Jede Kante hat genau einen Startknoten. Jede Kante hat auch genau einen Endknoten. Somit herrscht Gleicheit.
+     \end{proof}
+  \end{satz}
+  \vspace{\baselineskip}
+
+  \begin{korollar}
+    In jedem Graphen ist die Anzahl der Knoten  mit ungeradem Grad gerade.
+    \begin{proof}
+    $\Sigma_{x\in V(G)}$ $= 2|E(G)|$, also gerade.
+    Summiert man die Grade aller Knoten mit geradem Grad, erhält man ein gerades Ergebnis.
+    Um aus $\Sigma_{x\in V(G)}$ eine gerade Zahl zu kommen, muss also die Anzahl aller Knoten mit ungeradem Grad gerade sein.
+    \end{proof}
+  \end{korollar}
+  \vspace{\baselineskip}
+
+  \begin{definition}
+    Ein Graph H ist Teilgraph (Subgraph/ Untergraph) des Graphen G, falls $V(H)\subseteq V(G)$ und $E(H)\subseteq E(G)$.
+   (Damit ist auch $\psi(e)$ in G und H identisch für alle $a\in E(H)$.)
+   Man sagt auch, dass G den Graphen H enthält.
+   Falls $V(G)= V(H)$, so heißt H ein aufspannender Teilgraph.
+  \end {definition}
+  \vspace{\baselineskip}
+
+  \begin{beispiel}
+    Schauen wir uns das erste Beispiel erneut an:
+    Sei Graph G ist gegeben durch $(\{1,2,3,4,5\}, \{a,b,c,d,e \}, \{a\mapsto  (2,5), b\mapsto (4,5), c\mapsto (1,2), d\mapsto (2,1), e\mapsto (1,3)\})$
+    Sei Graph H ist gegeben durch $({\2,4,5\}, \{a,b\}, \{a\mapsto  (2,5), b\mapsto (4,5)\})$. 
+    Graph H ist damit ein Teilgraph von G.
+    Sei Graph I gegeben durch $(\{2,4,5\}, \{a,b\}, \{a\mapsto  (2,4), b\mapsto (4,5)\}) $.
+    Graph I ist damit ein aufspannender Teilgraph von H, da sie dieselbe Knotenmenge besitzen.
+  \end {beispiel}
+  \vspace{\baselineskip}
+
+  \begin{definition}
+  H heißt induzierender Teilgraph, falls $E(H)= \{\{x,y\}\in E(G)| x,y\in V(H)\}$ bzw. $E(H)= \{\{x,y\}\in E(G)| x,y\in V(H)\}$.
+  Ein induzierender Teilgraph H von G ist bereits vollständig durch die Knotenmenge V(H) spezifiziert.
+  Man sagt daher auch, dass H der von V(H) induzierte Teilgraph von G ist.
+  Notation: $G[V(H)]$.
+
+  Zwei Arten, Subgraphen zu bilden, kommen oft vor:
+  Sei G ein Graph. Für $v\in V(G)$ definieren wir $G-v:= G[V(G)\ {v}]$.
+  Für $e\in E(G)$ definieren wir $G-e:= (V(G), E(G)\setminus \{e\})$.
+  \end{definition}
+  \vspace{\baselineskip}
+
+  \begin {beispiel}
+    Im vorherigen Beispiel ist H ein induziertere Teilgraph von G.
+    Dieser Graph entstand durch Reduktion der Knoten und Kanten von G.
+    Also aus beiden Möglichkeiten einen Teilgraphen herzustellen.
+    \end {beispiel}
+  \vspace{\baselineskip}  
+\newpage
+
+\section{Wege und Kreise}
+
+  \begin {definition} 
+  Ein Kantenzug von $x_1$ nach $x_^{k+1}$ in einem Graphen G ist eine Folge $x_1$, $e_1$, $x_2$, $e_2$,...,$x_k$, $e_k$, $x_{k+1}$ mit $k\in {\mathbbm{N}} \cup {0}$ und  $e_i$ =($x_i$, $x_{i+1}$) beziehumgsweise $e_i$= {$x_i$, $x_{i+1}$} \in E(G) für $i=1$,...,k$ $.\\
+  Falls  $ $x_1$= $x_{k+1}$ $, so handelt es sich um einen geschlossenen Kantenzug.\\
+  Ein Weg ist ein Graph P= (\{$x_1$,..., $x_{k+1}\}$,\{$e_1$,..., $e_k$\}) mit $k\geq 0$ und der Eigenschaft, dass $x_1$, $e_1$, $x_2$, $e_2$,...,$x_k$, $e_k$, $x_{k+1}$ ein Kantenzug ist.
+  Man sagt auch, dass P ein $x_1$-$x{k+1}$- Weg ist, oder dass P $x_1$ und $x_{k+1}$ verbindet.
+  Die Knoten $x_1$ und $x_{k+1}$ werden die Endknoten des Weges P genannt; die Knoten V(P)\ \{$x_1$, $x_{k+1}$\} sind die inneren Knoten von P.
+  Ein Kreis ist ein Graph C= (\{$x_1$,..., $x_k$\}, \{$e_1$,...,$e_k$\}) mit $k\geq 2$, so dass die Folge $x_1$,$e_1$,$x_2$,$e_2$,...,$x_k$, $e_k$, $x_1$ ein geschlossener Kantenzug ist.
+  Die Länge eines Weges oder Kreises ist die Anzahl seiner Kanten. 
+  Ist ein Weg oder Kreis ein Teilgrph von G, so spricht man von einem Weg oder einem Kreis in G.
+  In einem Graphen G heißt ein Knoten y von einem Knoten x aus erreichbar, wenn es einen x-y-Weg in G gibt.
+  In ungerichteten Graphen definiert man dies eine Äquivalenzrelation, denn die Transitivität folgt aus:
+  \end{definition}
+  \vspace{\baselineskip}
+
+  \begin{lemma} 
+    Sei G ein Graph und $x, y\in V(G)$. Es gibt genau dann einen x-y-Weg in G, wenn es einen Kantenzug von x nach y in G gibt.
+    \begin{proof}
+     $ \Rightarrow$ Nach Definition entspricht ein x-y-Weg einem Kantenzug von x nach y.
+     $\Leftarrow$ Angenommen, in einem Kantenzug von x nach y kommt ein Knoten v mehfach vor.
+     Dann eliminiere alle Knoten und Kanten nach dem ersten bis einschließlich zum letzen Auftreten von v.
+     Wiederholt man dies, bleibt ein x-y-Weg übrig.
+    \end{proof}
+  \end{lemma}
+  \vspace{\baselineskip}
+
+  \begin{definition} 
+   Zwei Graphen heißen kanten- bzw. knotendisjunkt, wenn sie keine Kanten bzw. keinen Knoten gemeinsam haben.
+  \end{definition}
+\vspace{\baselineskip}
+
+  \begin{lemma} \lable
+    Sei g ein ungerichteter Graph mit $|\delta (v)|$ gerade für alle $v\in V(G)$ oder ein gerichteter Graph mit $|\delta ^-(v)|$ =$|\delta ^+(v)|$ für alle $v\in V(G)$.
+    Dann existieren ein $k \geq 0$ und ein paarweise kantendisjunkte Kreise $C_1$,...,$C_k$, sodass $E(G)= E($C_1$) \cup ... E($C_k$)$.
+    \begin{proof}
+    Sei G ein ungerichteter Graph mit geradem Grad an jedem Knoten.
+    Induktion über Anzahl der Kanten, $|E(G)|$.\\
+    Induktionsanfang: Falls $|E(G)|=0$, ist Aussage trivial, da es keine Kanten gibt.\\
+    Induktonsschritt: Von m-1 nach m. Mit $|E(G)|=m >0$\\
+    Induktionsannahme: Angenommen, die Aussage gilt für alle Graphen, die die Voraussetzungen erfüllen mit m-1 Kanten.\\
+    Da jeder Knoten geraden Grades ist, gibt es keinen Knoten mit Grad 1. Starte in einem Knoten und laufe entlang des Graphen. Da es ein endlicher Graph ist, erreicht man irgendwann einen Knoten zum zweiten Mal.
+    Dieser Weg zwischen dem ersten Mal an diesem Knoten ist ein Kreis.
+    Betrachte Graphen $G'=G-E(C)$. Wobei C der oben genannte Kreis ist. 
+    In G' verliert der Kreis genau zwei inzidente Kanten, der Rest keine.
+    Damit bleibt der Grad gerade und G' erfüllt die Voraussetzungen immer noch und es gilt:\\
+    \[$|E(G')<|E(G)$\].
+    Nach Annahme zerfallen die Kanten von G' in kantendisjunkte Kreise, also $(E/G')=E($C_1$)\dot\cup... \dot\cup E($C_r$)$.
+    Zusammen mit C erhält man dann also: $E(G)= E(C)\dot\cup E($C_1$)\dot\cup...\dot\cup E($C_r$)$.
+    Im gerichteten Fall ist es ähnlich:\\
+    Da $|\delta ^-(v)|$ =$|\delta ^+(v)|$ für alle $v\in V(G)$ gilt, hat jeder Knoten eine ausgehende und eine eingehende Kante.
+    Also immer eine Kante, an der man den Graphen weiter laufen kann. So muss man also irgendwann durch Endlichkeit des Graphen wieder beim gleichen Knoten ankommen.
+    \end{proof}
+  \end{lemma}
+  \vspace{\baselineskip}
+
+  \begin{definition} \lable
+    Für zwei Mengen A und B ist deren symmetrische Differenz definiert als $A\triangle B:= (A\setminus B) \dot\cup (B\ setminus A)$.
+    Mit $A\dot\cup B$ bezeichnen wir eine disjunkte Vereinigung, in der Elemente aus $A\triangle B$ einfach und Elemente aus $A \cap B$ doppelt vorkommen.
+  \end{definition}
+  \vspace{\baselineskip}
+ 
+  \begin{lemma}\lable
+    Sei G ein Graph, und seien P ein s-t-Weg in G und Q ein t-s-Weg in G, und $P\neq Q$.
+    Dann erhält $(V(P)\cup V(Q), E(P) \cup E(Q))$ einen Kreis.
+    \begin{proof}
+      Betrachte $C:=E(P)\triangle E(Q)$ im ungerichteten Fall und $C:=E(P)\cup E(Q)$ im gerichteten Fall, und sei $H:= (V(G),C)$.
+      Im ungerichteten Fall hat jeder Knoten in H geraden Grad.\\
+      Im gerichteten Fall gilt für jeden Knoten $v\in V(G)$, dass |$\delta^-_H$(v)|$ =$ |$\delta^+_H$(v)$|$.
+      Nach Lemma 15 ist $E(H)= C$ somit in beiden Fällen die disjunkte Vereinigung von Kantenmengen von Kreisen.
+      In keinem Kreis kann eine Kante von G doppelt vorkommen.
+      Wegen $P\neq Q$ gilt $\emptyset= C\subseteq E(P)\cup E(Q)$ und es folgt die Behauptung.
+    \end{proof}
+  \end{lemma}
+  \vspace{\baselineskip}
+\newpage
+
+\section{Zusammenhang und Bäume}
+ \begin{definition} \lable
+   Wir betrachten nun zusammenhängende Graphen und insbesondere minimal zusammenhängende Teilgraphen.
+    Sei $\mathcal{F}$ eine Familie von Mengen bzw. Graphen. 
+    Dann ist $F \in\mathcal{F}$ inklusionsminimal bzw. minimal, falls keine echte Teilmenge bzw. kein echter Teilgraph von F in $\mathcal{F}$ ist.
+    Entsprechend ist $F \in \mathcal{F}$ inklusionsmaximal bzw. maximal, falls F keine echte Teilmenge bzw. kein echter Teilgraph eines Elements in $\mathcal{F}$ ist.
+    Man beachte, dass inklusionsminimale, bzw. -maximale Mengen in $\mathcal{F}$ nicht notwendigerweise kardinalitätsminimal bzw. -maximal sind.
+    \end{definition}
+    \vspace{\baselineskip}
+
+    \begin{definition} \lable
+      Sei G ein ungerichteter Graph.
+      G heißt zusammenhängend, falls es für je zwei Knoten $x,y \in V(G)$ einen x-y-Weg gibt.
+      Ansonsten heißt G unzusammenhängend.
+      Die maximalen zusammenhängenden Teilgraphen von G sind die Zusammenhangskomponenten von G.
+      Ein Knoten v heißt Artikulationsknoten, falls v nicht der einzige Knoten ist und $G-v$ mehr Zusammenhangskomponenten hat als G.
+      Eine Kante e heißt Brücke, falls $G-e$ mehr Zusammenhangskomponenten hat als G.
+    \end{definition}
+    \vspace{\baselineskip}
+
+    \begin{satz}
+    Ein ungerichteter Graph G ist genau dann zusammenhängend, falls $\delta (X)\neq \emptyset$ für alle $\emptyset \subset X\subset V(G)$.
+    \begin {proof}
+    $\Rightarrow$ Sei  $\emptyset \subset X\subset V(G)$ und $x\in X, y\in V(G)\X$. 
+    Da G zusammenhängend ist, gibt es enen x-y-Weg in G.
+    Da $x\in X$ aber $y\notin X$, muss der Weg eine Kante $\{a,b\}$ enthalten mit $a\in X$ und $b\notin X$.
+    Dann ist also $\delta (X)\neq \emptyset$.
+    $\Leftarrow$ Angenommen G ist unzusammenhängend. Seien a und b Knoten in V(G), die nicht durch einen a-b-Weg verbunden sind.
+    Sei X die Menge der von a aus erreichbaren Knoten.
+    Wegen $a\in X$ und $b\notin X$ gilt $\emptyset \subset X\subset V(G)$.
+    Nach Definition von X gilt zudem $\delta (X)= \emptyset$.
+    Dies ist ein Widerspruch.
+    \end {proof}
+    \end{satz}
+  \vspace{\baselineskip}
+  
+  \begin{bemerkung} 
+    Nach Satz 20 kann man prüfen, ob ein gegebener Graph G zusammenhängend ist, indem man für jede Menge X mit $\emptyset \subset X\subset V(G)$ testet, ob $\delta(X) \neq \emptyset$ ist.\\
+    Da es  $2^{|V(G)|}$ $-2$ solcher Mengen X gibt, erfordert dieser Ansatz aber exponentiellen Rechenaufwand. 
+    \end {bemerkung}
+  \vspace{\baselineskip}
+  
+  \begin{definition}
+    Ein ungerichteter Graph heißt Wald, falls er keinen Kreis enthält.
+    Ein Baum ist ein zusammenhängender Wald.
+    Ein Knoten von Grad 1 in einem Baum heißt Blatt.
+    Also sind Zusammenhangskomponenten von Wäldern Bäume.
+  \end{definition}
+  \vspace{\baselineskip}
+
+  \begin{satz} 
+    Jeder Baum mit mindestens zwei Knoten enthält mindestens zwei Blätter.
+    \begin{proof}
+      Betrachte einen maximalen Weg im Baum. Dieser hat die Länge $\geq 1$ und seine Endknoten müssen Blätter sein, da ein Wald keine Kreise enthält.
+    \end{proof}
+  \end{satz}
+  \vspace{\baselineskip}
+
+  \begin{lemma}
+    Sei G ein Wald mit n Knoten, m Kanten und p Zusammenhangskomponenten. Dann ist n= m+p.
+    \begin{proof}
+    Induktion über m.
+    Trivial für $m=0$.
+    Induktionsannahme: Angenommen, für jeden Wald mit m Kanten gilt: $n=m+p$. \\
+    Induktonsschritt: von m nach m+1.
+    Betrachte nun Wald G mit m+1 Kanten. Da G Wald ist und keine Kreise enthält, lässt sich eine Kante e entfernen. Nenne diesen Graphen G'.
+    Knotenzahl: $n'=n$.\\
+    Kantenzahl verändert sich um -1; $m'= m-1$.\\
+    Zusammenhangskomponenten zerfallen in zwei Komponenten, da G keinen Kreis enthält. So erhalten wir eine Zusammenhangskomponente mehr:
+    $p+1=p'$.\\
+    G' ist ebenfalls ein Wald.\\
+    Nach Induktionsannahme gilt für $G': n'=m'+p'$.\\
+    Durch Einsetzen folgt: $n=(m-1)+(p+1)$ \Leftrightarrow $n=m+p+1-1$ \Leftrightarrow $n=m+p$.
+    \end{proof}
+  \end{lemma}
+  \vspace{\baselineskip}
+
+  \begin{satz} 
+    Sei G ein ungerichteter Graph auf n Knoten.
+    Dann sind folgende Aussagen äqiuivalent:\\
+      (a) G ist ein Baum.\\
+      (b) G hat n-1 Knoten und enthält einen Kreis.\\
+      (c) G hat n-1 Kanten und ist zusammenhängend.\\
+      (d) G ist ein minimaler zusammenhängender Graph mit Knotenmenge V(G).\\
+      (e) G ist minimaler Graph mit Knotenmenge V(G) und $\delta (X) \neq \emptyset$ für alle $\emptyset \subset X\subset V(G)$.\\
+      (f) G ist ein maximaler Weg mit Knotenmenge V(G).\\
+      (g) Je zwei Knoten in G sind durch genau einen Weg in G verbunden.\\
+    \begin{proof}
+      $(a)\Rightarrow (g)$ In einem Wald sind je zwei Knoten Blätter, also nur durch einen Weg verbunden. Dasselbe gilt in zusammenhängenden Graphen.
+      $(g)\Rightarrow (d)$ Nach Definition ist G zusammenhängend.\\
+        Angenommen, es gäbe eine Kante e, so dass $G-e$ zusammenhängend ist. Dann wären die Endknoten von $e \in G$ durch zwei verschiedene Wege verbunden, im Widerspruch zu (g).\\
+      $(e)\Rightarrow (d)$ folgt aus Satz 20.\\
+      $(d)\Rightarrow (f)$ Wenn jede Kante eine Brücke ist, enthält G keine Kreise.\\
+        Wenn G zusammenhängend ist, erzeugt das Hinzufügen einer beliebigen Kante immer enen Kreis.\\
+      $(f)\Rightarrow (b)$ Die Maximalität impliziert den Zusammenhang und somit gemäß Lemma 24 |E(G)|= |V(G)|-1.\\
+      $(b)\Rightarrow (c)$ folgt direkt aus Lemma 24.\\
+      $(c)\Rightarrow (a)$ Enthält ein zusammenhängender Graph einen Kreis, so können wir eine Kante entfernen, ohne den Zusammenhang zu zerstören.\\
+        So entfernen wir k Kanten und erhalten schließlich einen zusammenhängenden Wald mit $n-1-k$ Kanten.\\
+        Wegen Lemma 24 muss dann aber $k=0$ sein.\\
+    \end{proof}
+ \end{satz}
+ \vspace{\baselineskip}
+
+ \begin{korollar} 
+    Ein ungerichteter Graph ist genau dann zusammenhängend, wenn er einen ausgespannten Baum enthält.
+   \begin {proof}
+    $\Rightarrow$ Ist der Graph zusammenhängend, kann man aus ihm Kanten entfernen, die zu Kreiden gehören, ohne die Zuammenhangseigenschaft zu zerstören.
+      Am Ende bleibt ein aufspannender, kreisfreier Teilgraph- Baum über.\\
+    $\Leftarrow$ Enthält der Graph einen aufspannenden Baum, dannverbindet dieser alle Knoten miteinander. Deshalb ist der Graph zusamnnehängend.
+    \end {proof}
+ \end{korollar}
+ \vspace{\baselineskip}
+\newpage
+
+\section{Starker Zusammenhang und Arboreszenzen}
+  \begin{definition} 
+    Für einen Digraphen G betrachten wir den zugrundeliegenden ungerichteten Graphen, d.h. einen ungerichteten Graphen G' mit V(G)= V(G'), sodass es eine Bijektion $\phi : E(G)\rightarrow E(G')$ gibt mit $\phi((v,w))= {v,w}$ für alle $(v,w)\in E(G)$.\\
+    Man nennt G auch eine Orientierung von G'.
+    Ein Digraph G heißt (schwach) zusammenhängend, falls der zugrundeliegende ungerichtete Graph zusammenhängend ist.
+    G heißt stark zusammenhängend, falls es für alle $s,t \in V(G)$ einen Weg von s nach t gibt.
+    Die stark Zusammenhangskomponenten eines Digraphen sind die maximalen stark zusammenhängenden Teilgraphen.
+  \end{definition}
+  \vspace{\baselineskip}
+
+  \begin{satz} 
+    Sei G ein Digraph und $r \in V(G)$.
+    Genau dann gibt es für jedes $v\in V(G)$ einen r-v-Weg, wenn $ $\delta^+$(X) \neq \emptyset$ für alle $X\subset V(G)$ mit $r \in X$.
+    \begin{proof}
+      Analog zum Beweis von Satz 20.
+    \end{proof} 
+  \end{satz}
+  \vspace{\baselineskip}
+
+  \begin{definition} 
+    Ein Digraph ist ein Branching, falls der zugrundeliegende ungerichtete Graph ein Wald ist jeder Knoten höchstens eine eingehende Kante hat.
+    Ein zusammenhängendes Branching heißt Aboreszenz.
+    Eine Aboreszenz mit n Knoten hat nach Satz 25 n-1 Kanten, somit hat sie genau einen Knoten r mit $\delta^-$(r)$\neq \emptyset$.
+    Dieser Knoten heißt die Wurzel der Aboreszenz. 
+    Für eine Kante $(v,w)$ eines Branchings heißt w ein Kind von v, und v der Vorgänger von w.
+    Knoten ohne Kinder heißen Blätter.
+  \end{definition}
+  \vspace{\baselineskip}
+
+  \begin{satz} \lable
+    Sei G ein Digraph mit n Knoten und $r \in V(G)$.
+    Dann sind folgende Aussagen äquivaltent:
+    $(a)$ G ist eine Arboreszenz mit Wurzel r.\\
+    $(b)$ G ist ein Branching mit $n-1$ Kanten und $ $\delta^-$(r)\neq \emptyset $.\\
+    $(c)$ G hat n-1 Kanten und jeder Knoten ist von r aus erreichbar.\\
+    $(d)$ Jeder Knoten ist von r aus erreichbar, aber das Entfernen eine r beliebigen Kante zerstört diese Eigenschaft.\\
+    $(e)$ G erfüllt $ $\delta^+$(X) \neq \emptyser $ für alle $X \subset V(G)$ mit $r \in X$, das Entfernen einer beliebigen Kante zerstört diese Eigenschaft.\\
+    $(f)$ $ $\delta^-$(r) =\emptyset $ und für jedes $v \in V(G)$ gibt es einen eindeutig bestimmten Kantenzug von r nach v.\\
+    $(g)$ $\delta^-$(r)=$\emptyset$ und |$\delta^-$(v)$|=1$ für alle $v\in V(G) \setminus \{r\} $, und G enthält keinen Kreis.\\
+    \begin{proof}
+    $a\implies (b)$\\
+      Angenommen, G sei eine Aboreszenz mit Wurzel r. Dann gilt:\\
+      G ist ein Branching; r hat keinen Vorgänger: $ $\delta^$-(r)=\emptyset $ ; jeder Knoten besitzt genau eine eingehende Kante.
+      Da es genau $n-1$ andere Kanten als r gibt, hat G genau $n-1$ Kanten. So gilt b.
+    $(b)\implies (c)$\\
+      Angenommen, G ist ein Branching, $|E|=n-1$ und $\delta^-$ $(r)=\emptyset$.\\
+      Da jeder Knoten maximal Eingangsgrad 1 hat und es insgesamt $n-1$ Kanten gibt, folgt:\\
+      Jeder Knoten außer r hat Eingangsgrad 1 und r hat Eingangsgrad 0.\\
+      Zu zeigen ist nun die Erreichbarkeit von r.\\
+      Nehme einen Knoten aus G mit $v\neq r$. Verfolge die eindeutige eingehende Kante rückwärts.
+      Da der Graph endlich ist und es durch den Eingangsgrad 1 jedes Knoten eine Kreise gibt, erreicht man irgednwann r.\\
+      So gilt c.\\
+    $(c)\implies (d)$ \\  
+      Angenommen G sei ein Digraph mit $n-1$ Kanten und jeder Knoten sei von r erreichbar.
+      Zu zeigen ist nun, dass das Entfernen einer beliebigen Kante die Erreichbarkeit aller Knoten von r aus zerstört.
+      Enthielte G einen Kreis, könnte es nicht $n-1$ Kanten geben, wie die obige Folgerung zeigt.
+      Entferne nun eine beliebige Kante e aus G. Da G kreisfrei ist, trennt dies den Graph in zwei Teile.
+      Einer dieser beiden Teile ist dabei nicht mit r verbunden und somit nicht von r aus erreichbar.\\
+      Somit gilt d.\\
+    $(d) \Leftrightarrow (e)$ folgt aus Satz 28.\\
+    $(d)\implies (f)$\\ Aus der Minimaltiät in (d) folgt $ $\delta^-$ (r)= \emptyset $.
+      Angenommen, es gäbe für irgendein v zwei verschiedene Kantenzüge P und Q von r nach v.
+      Dann muss $v\neq r$ sein.
+      Wir wählen v, P und Q so, dass die Summe der Längen der beiden Kantenzüge minimal ist.
+      Dann müssen sich P und Q schon in der letzten Kante unterschieden.
+      Das aber bedeutet, dass wir eine dieser beiden Kanten entfernen können, ohne die Erreichbarkeit aller Knoten von r aus zu zerstören.\\
+    $(f) \implies (g)$\\
+      Angenommen: $ $\delta^-$(r)=\emptyset$ und zu jedem v gilt es genau einen Weg von r nach v.\\
+      Dann hat jeder Knoten $v\neq r$ genau eine eingehende Kante.\\
+      Mindestens eine Kante, weil es einen Weg nach v gibt. Höchstens eine Kante, weil zwei verschiedene Kanten zwei verschiedene Wege erzeugen würden.\\
+      Also:|$\delta^-$(v)$| =1$. 
+      Zu zeigen nun ist die Kreisfreiheit.\\
+      Angenommen G enthielte einen Kreis.
+      Dann gäbe es zu einem Knoten auf einem Kreis zwei verschieden Wege von r aus; einen auf direktem Wege und einen über den Kreis.\\
+      Dies ist ein Widerspruch zur Eindeutigkeit. Somit ist G kreisfrei und g gilt.\\
+    $(g)\Leftrightarrow (b)$\\
+     Wenn $|$\delta^-$(v)|\leq 1$ für alle $v \in V(G)$ gilt, dann ist jeder Teilgraph, dessen zugrundeliegender ungerichteter Graph ein Kreis ist, sogar selbst ein (gerichteter) Kreis.
+      Somit folgt mit (g), dass G Branching ist.        
+    \end{proof}
+  \end{satz}
+  \vspace{\baselineskip}
+
+  \begin{korollar}\lable
+    Ein Digraph G ist genau dann stark zusammenhängend, wenn er für jedes r \in V(G) eine aufspannende Aboreszenz mit Wurzel r enthält.
+    \begin{proof}
+    $\Rightarrow$ Da G zusammenhängend ist, gibt es zwischen je zwei Knotene einen Weg.\\
+      Betrachte nun unter allen zusammenhängenden Teilgraphen von G einen möglichst kleinen, d.h. mit möglichst wenig Kanten.\\
+      Nenne diesen T. Es gilt dann:\\
+     T ist zusammenhängend, T enthält alle Knoten von G und T hat keine überflüssigen Knoten.\\
+      Zu zeigen ist, dass T keine Kreise enthält.\\
+      Angenommen T enthielte einen Kreis.\\
+      Dann könnte man eine Kante des Kreises entfernen ohne, dass T seinen Zusammenhang verliert.\\
+      Daraus enthielte man einen kleineren Graphen aus T, der zusammenhängend ist. Dies widerspricht aber der Minimalität der Konstruktion von T.\\
+      Damit kann T keinen Kreis enthalten und T ist nach Definition ein zusammenhängender Baum.\\
+    $\Leftarrow$ Angenommen, G enthielte einen zusammenhängenden Baum T.\\
+      Es ist zu zeigen, dass G zusammenhängend ist.\\
+      Per Definition ist T zusammenhängend, da er ein Baum ist. So gibt es zwischen je zwei Knoten einen Weg.\\
+      Da T Teilgraph von G ist, gibt es diese Ege auch in G. Somit gibt es auf G zwischen je zwei Knoten einen Weg.\\
+      G ist damit zusammenhängend.
+  \end{proof}
+  \end{korollar}
+\vspace{\baselineskip}
+\newpage
+
+\section{Literatur}
+  Stephan Hougardy und Jens Vygen. Algorithmische Mathematik. 2., korrigierte und erweiterte Auflage. Berlin: Springer Spektrum, 2018.
+
+\end{document}
+
+
+  
+  
+
